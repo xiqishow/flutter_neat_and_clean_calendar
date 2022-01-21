@@ -519,6 +519,9 @@ class _CalendarState extends State<Calendar> {
           [];
     });
     _launchDateSelectionCallback(_selectedDate);
+    if (widget.onMonthChanged != null) {
+      widget.onMonthChanged!(_selectedDate);
+    }
   }
 
   void previousMonth() {
@@ -537,6 +540,9 @@ class _CalendarState extends State<Calendar> {
           [];
     });
     _launchDateSelectionCallback(_selectedDate);
+    if (widget.onMonthChanged != null) {
+      widget.onMonthChanged!(_selectedDate);
+    }
   }
 
   void nextWeek() {
@@ -655,9 +661,6 @@ class _CalendarState extends State<Calendar> {
   void _launchDateSelectionCallback(DateTime day) {
     if (widget.onDateSelected != null) {
       widget.onDateSelected!(day);
-    }
-    if (widget.onMonthChanged != null) {
-      widget.onMonthChanged!(day);
     }
   }
 
