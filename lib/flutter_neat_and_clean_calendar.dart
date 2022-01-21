@@ -662,8 +662,7 @@ class _CalendarState extends State<Calendar> {
   }
 
   _firstDayOfWeek(DateTime date) {
-    var day = DateTime.utc(
-        _selectedDate.year, _selectedDate.month, _selectedDate.day, 12);
+    var day = DateTime.utc(date.year, date.month, date.day, 12);
     if (widget.startOnMonday == true) {
       day = day.subtract(Duration(days: day.weekday - 1));
     } else {
