@@ -137,9 +137,22 @@ class _CalendarState extends State<Calendar> {
   DateTime _selectedDate = DateTime.now();
   String? currentMonth;
   late bool isExpanded;
-  String displayMonth = '';
+  String _displayMonth = '';
   DateTime get selectedDate => _selectedDate;
   List<NeatCleanCalendarEvent>? _selectedEvents;
+
+  final CurrentMonth currentMonthModel = CurrentMonth("");
+
+  set displayMonth(String value) {
+    if (_displayMonth != value) {
+      currentMonthModel.value = _displayMonth;
+    }
+    _displayMonth = value;
+  }
+
+  String get displayMonth {
+    return _displayMonth;
+  }
 
   void initState() {
     super.initState();
@@ -158,6 +171,11 @@ class _CalendarState extends State<Calendar> {
     _selectedEvents = widget.events?[DateTime(
             _selectedDate.year, _selectedDate.month, _selectedDate.day)] ??
         [];
+    currentMonthModel.addListener(() {
+      if (widget.onMonthChanged != null) {
+        widget.onMonthChanged!(_selectedDate);
+      }
+    });
   }
 
   Widget get nameAndIconRow {
@@ -510,6 +528,9 @@ class _CalendarState extends State<Calendar> {
       var lastDateOfNewMonth = Utils.lastDayOfMonth(_selectedDate);
       updateSelectedRange(firstDateOfNewMonth, lastDateOfNewMonth);
       selectedMonthsDays = _daysInMonth(_selectedDate);
+      selectedWeekDays = Utils.daysInRange(
+              _firstDayOfWeek(_selectedDate), _lastDayOfWeek(_selectedDate))
+          .toList();
       var monthFormat =
           DateFormat('MMMM yyyy', widget.locale).format(_selectedDate);
       displayMonth =
@@ -519,9 +540,6 @@ class _CalendarState extends State<Calendar> {
           [];
     });
     _launchDateSelectionCallback(_selectedDate);
-    if (widget.onMonthChanged != null) {
-      widget.onMonthChanged!(_selectedDate);
-    }
   }
 
   void previousMonth() {
@@ -531,6 +549,9 @@ class _CalendarState extends State<Calendar> {
       var lastDateOfNewMonth = Utils.lastDayOfMonth(_selectedDate);
       updateSelectedRange(firstDateOfNewMonth, lastDateOfNewMonth);
       selectedMonthsDays = _daysInMonth(_selectedDate);
+      selectedWeekDays = Utils.daysInRange(
+              _firstDayOfWeek(_selectedDate), _lastDayOfWeek(_selectedDate))
+          .toList();
       var monthFormat =
           DateFormat('MMMM yyyy', widget.locale).format(_selectedDate);
       displayMonth =
@@ -540,9 +561,6 @@ class _CalendarState extends State<Calendar> {
           [];
     });
     _launchDateSelectionCallback(_selectedDate);
-    if (widget.onMonthChanged != null) {
-      widget.onMonthChanged!(_selectedDate);
-    }
   }
 
   void nextWeek() {
@@ -561,6 +579,7 @@ class _CalendarState extends State<Calendar> {
       _selectedEvents = widget.events?[DateTime(
               _selectedDate.year, _selectedDate.month, _selectedDate.day)] ??
           [];
+      selectedMonthsDays = _daysInMonth(_selectedDate);
     });
     _launchDateSelectionCallback(_selectedDate);
   }
@@ -581,6 +600,7 @@ class _CalendarState extends State<Calendar> {
       _selectedEvents = widget.events?[DateTime(
               _selectedDate.year, _selectedDate.month, _selectedDate.day)] ??
           [];
+      selectedMonthsDays = _daysInMonth(_selectedDate);
     });
     _launchDateSelectionCallback(_selectedDate);
   }
@@ -724,5 +744,12 @@ class ExpansionCrossFade extends StatelessWidget {
           isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
       duration: const Duration(milliseconds: 300),
     );
+  }
+}
+
+class CurrentMonth extends ValueNotifier<String> {
+  CurrentMonth(String value) : super(value);
+  set value(String value) {
+    notifyListeners();
   }
 }
