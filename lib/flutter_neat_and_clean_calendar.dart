@@ -393,6 +393,9 @@ class _CalendarState extends State<Calendar> {
   }
 
   Widget get eventList {
+    _selectedEvents = widget.events?[DateTime(
+            _selectedDate.year, _selectedDate.month, _selectedDate.day)] ??
+        [];
     if (widget.eventListBuilder == null) {
       return Expanded(
         child: _selectedEvents != null && _selectedEvents!.isNotEmpty
