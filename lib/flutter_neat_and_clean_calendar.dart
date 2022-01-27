@@ -95,6 +95,7 @@ class Calendar extends StatefulWidget {
   final Color? bottomBarArrowColor;
   final Color? bottomBarColor;
   final String? expandableDateFormat;
+  final bool isShowHeader;
 
   Calendar({
     this.onMonthChanged,
@@ -124,6 +125,7 @@ class Calendar extends StatefulWidget {
     this.bottomBarArrowColor,
     this.bottomBarColor,
     this.expandableDateFormat = 'EEEE MMMM dd, yyyy',
+    this.isShowHeader = true,
   });
 
   @override
@@ -486,7 +488,7 @@ class _CalendarState extends State<Calendar> {
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          nameAndIconRow,
+          if (widget.isShowHeader) nameAndIconRow,
           ExpansionCrossFade(
             collapsed: calendarGridView,
             expanded: calendarGridView,
